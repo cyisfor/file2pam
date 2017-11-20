@@ -17,6 +17,8 @@
 
 #define PUTLIT(lit) write(1,lit,sizeof(lit)-1)
 
+const int redundancy = 8;
+
 int main(int argc, char *argv[])
 {
 	struct stat info;

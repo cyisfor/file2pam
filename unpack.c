@@ -40,6 +40,9 @@ int main(int argc, char *argv[])
 	cur += 4;
 	fprintf(stderr,"Um %d %d %d %d\n",length,info.st_size,cur-mem,
 					length - (info.st_size-(cur-mem)));
-	assert(length <= (info.st_size-(cur-mem)));
+	if(length > (info.st_size-(cur-mem))) {
+		puts("bad length, may be corrupted");
+		length = info.st_size-(cur-mem);
+	}
 	fwrite(cur,1,length,stdout);
 }
