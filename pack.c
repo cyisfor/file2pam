@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
 		}
 		lseek(out, 0, SEEK_SET);
 		mem = mmap(NULL,info.st_size,PROT_READ,MAP_PRIVATE,out,0);
+		close(out);
 		assert(mem != MAP_FAILED);
 	}
 
@@ -70,8 +71,14 @@ int main(int argc, char *argv[])
 	fwrite(mem,1,info.st_size,stdout);
 	munmap(mem,info.st_size);
 
+	// each row is 3*width bytes,
+	// bytes left in the row are 3*width-size%(3*width)
+	// so if 3*width is 12, and size is 3535, 3535%12 = 7
+	// 12-7 = 5, so 3535+5 = 3540, evenly divisible by 12
+	fprintf(stderr,"wut? %d %d %d\n",3*width,info.st_size,
+					3*width-info.st_size%(3*width));
 	for(i=0;i<3*width-info.st_size%(3*width);++i) {
-		fputc(255,stdout);
+		fputc(254,stdout);
 	}
 		
 	return 0;
