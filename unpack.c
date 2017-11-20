@@ -15,11 +15,17 @@ int main(int argc, char *argv[])
 {
 	// pngtopam always produces P6
 	// then a line, then a line, then data.
+	const char* mem;
 	struct stat info;
 	int res = fstat(0,&info);
-	assert(res == 0);
-
-	const char* mem = mmap(NULL,info.st_size,PROT_READ,MAP_PRIVATE,0,0);
+	if(res == 0 && info.st_size > 0) {
+		mem = mmap(NULL,info.st_size,PROT_READ,MAP_PRIVATE,0,0);
+		assert(mem != MAP_FAILED);
+	} else {
+		char buf[0x100000];
+		info.st_size = fread(buf,1,0x100000,stdin);
+		mem = buf;
+	}
 	const char* cur = memchr(mem,'\n',info.st_size);
 	assert(cur);
 	cur = memchr(cur+1,'\n',info.st_size-(cur-mem));
