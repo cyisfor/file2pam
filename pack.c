@@ -18,13 +18,10 @@
 
 int main(int argc, char *argv[])
 {
-	PUTLIT("P7\n");
-
 	struct stat info;
 	void* mem;
 	int res = fstat(0,&info);
 	if(res == 0 && info.st_size > 0) {
-		puts("boop");
 		mem = mmap(NULL,info.st_size,PROT_READ,MAP_PRIVATE,0,0);
 		assert(mem != MAP_FAILED);
 	} else {
@@ -37,7 +34,6 @@ int main(int argc, char *argv[])
 			if(amt == 0) {
 				break;
 			}
-			fprintf(stderr,"reas %d\n",amt);
 			assert(amt > 0);
 			info.st_size += amt;
 		}
@@ -46,21 +42,23 @@ int main(int argc, char *argv[])
 		assert(mem != MAP_FAILED);
 	}
 
-	fprintf(stderr,"funt length %d\n",info.st_size);
-
-	// RGB_ALPHA = 4 bytes per pixel so /4 = /2 /2
+	// RGB = 3 bytes per pixel so /3
 	// +4 for the sizeof the nsize
-	size_t pixels = (info.st_size+4) / 3;
+	size_t pixels = (info.st_size+4) / 3 + 1;
 	int width = sqrt(pixels);
-	int height = (pixels) / width + 1;
+	int height = (pixels) / width;
+	if(pixels < width*height) ++height;
 
-	printf("WIDTH %d\n",width);
-	printf("HEIGHT %d\n",height);
+	fprintf(stderr,"%d pixels\n",pixels);
 
-	PUTLIT("DEPTH 3\n"
-				 "MAXVAL 255\n"
-				 "TUPLTYPE RGB\n"
-				 "ENDHDR\n");
+
+
+	PUTLIT("P6\n");
+
+	printf("%d ",width);
+	printf("%d\n",height);
+
+	PUTLIT("255\n");
 
 	size_t i;
 

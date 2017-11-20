@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
 
 	int32_t length = ntohl(*((int32_t*)cur));
 	cur += 4;
-	fprintf(stderr,"Um %d\n",length);
-
-	assert(length <= info.st_size-(cur-mem));
+	fprintf(stderr,"Um %d %d %d %d\n",length,info.st_size,cur-mem,
+					length - (info.st_size-(cur-mem)));
+	assert(length <= (info.st_size-(cur-mem)));
 	fwrite(cur,1,length,stdout);
 }
