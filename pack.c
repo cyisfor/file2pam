@@ -66,9 +66,9 @@ int main(int argc, char *argv[])
 	
 	int32_t nsize = htonl(info.st_size);
 	ssize_t amt = write(1,&nsize,sizeof(nsize));
-	assert(amt == 1);
+	assert(amt == sizeof(nsize));
 	amt = write(1,mem,info.st_size);
-	assert(amt == 1);
+	assert(amt == info.st_size);
 	munmap(mem,info.st_size);
 
 	// each row is 3*width bytes,
@@ -81,8 +81,9 @@ int main(int argc, char *argv[])
 	if(tail >= 0) {
 		splice(tail,NULL,1,NULL,remaining,0);
 	} else {
-		for(i=0;i< - (4+info.st_size);++i) {
-			fputc(random() % 256,stdout);
+		for(i=0;i<remaining;++i) {
+			char c = random() % 256;
+			write(1,&c,1);
 		}
 	}
 	return 0;
