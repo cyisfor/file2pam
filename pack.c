@@ -17,10 +17,25 @@ int main(int argc, char *argv[])
 
 	struct stat info;
 	int res = fstat(0,&info);
-	assert(res == 0);
+	if(res == 0 && info.st_size > 0) {
+		mem = mmap(NULL,info.st_size,PROT_READ,MAP_PRIVATE,0,0);
+		assert(mem != MAP_FAILED);
+	} else {
+		char template[] = ".tmpXXXXXX";
+		int out = mkstemp(template);
+		unlink(template);
+		for(;;) {
+			ssize_t amt = splice(0, NULL, out, NULL, 0x100000, SPLICE_F_MOVE);
+			if(amt == 0) {
+				break;
+			}
+			assert(amt > 0);
+		}
+		lseek(out, 0, SEEK_SET);
+		mem = mmap(NULL,info.st_size,PROT_READ,MAP_PRIVATE,out,0);
+		assert(mem != MAP_FAILED);
+	}
 
-	void* mem = mmap(NULL,info.st_size,PROT_READ,MAP_PRIVATE,0,0);
-	assert(mem != MAP_FAILED);
 
 	// RGB_ALPHA = 4 bytes per pixel so /4 = /2 /2
 	// +4 for the sizeof the nsize
