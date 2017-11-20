@@ -7,7 +7,10 @@ int main(int argc, char *argv[])
 	puts("P6\n512 512\n255");
 	for(i=0;i<512;++i) {
 		for(j=0;j<512;++j) {
-			fputc(i,stdout);
+			int depth;
+			for(depth=0;depth<3;++depth) {
+				fputc((i+j*depth+50)%256,stdout);
+			}
 		}
 	}
 	return 0;

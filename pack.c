@@ -12,7 +12,7 @@
 #include <assert.h>
 #include <unistd.h> // lseek
 #include <fcntl.h> // splice
-#include <stdlib.h> // mkstemp
+#include <stdlib.h> // mkstemp, random
 
 #define PUTLIT(lit) fwrite(lit,sizeof(lit)-1,1,stdout)
 
@@ -68,17 +68,17 @@ int main(int argc, char *argv[])
 	fprintf(stderr,"Um %d %d\n",info.st_size,nsize);
 	ssize_t amt = fwrite(&nsize,sizeof(nsize),1,stdout);
 	assert(amt == 1);
-	fwrite(mem,1,info.st_size,stdout);
+	amt = fwrite(mem,info.st_size,1,stdout);
+	assert(amt == 1);
 	munmap(mem,info.st_size);
 
 	// each row is 3*width bytes,
 	// bytes left in the row are 3*width-size%(3*width)
 	// so if 3*width is 12, and size is 3535, 3535%12 = 7
 	// 12-7 = 5, so 3535+5 = 3540, evenly divisible by 12
-	for(i=0;i<=width+1-(info.st_size/3)%width;++i) {
-		fputc(254,stdout);
-		fputc(255,stdout);
-		fputc(253,stdout);
+	fprintf(stderr,"um %d %d\n",pixels,height*width);
+	for(i=0;i<3*height*width - (4+info.st_size);++i) {
+		fputc(random() % 256,stdout);
 	}
 		
 	return 0;
