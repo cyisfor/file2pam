@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	size_t pixels = (info.st_size+4) / 3 + 1;
 	int width = sqrt(pixels);
 	int height = (pixels) / width;
-	if(pixels < width*height) ++height;
+	++height;
 
 	fprintf(stderr,"%d pixels\n",pixels);
 
@@ -75,10 +75,10 @@ int main(int argc, char *argv[])
 	// bytes left in the row are 3*width-size%(3*width)
 	// so if 3*width is 12, and size is 3535, 3535%12 = 7
 	// 12-7 = 5, so 3535+5 = 3540, evenly divisible by 12
-	fprintf(stderr,"wut? %d %d %d\n",3*width,info.st_size,
-					3*width-info.st_size%(3*width));
-	for(i=0;i<3*width-info.st_size%(3*width);++i) {
+	for(i=0;i<=width+1-(info.st_size/3)%width;++i) {
 		fputc(254,stdout);
+		fputc(255,stdout);
+		fputc(253,stdout);
 	}
 		
 	return 0;
