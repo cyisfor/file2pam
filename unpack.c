@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
 	int32_t length = ntohl(*((int32_t*)cur));
 	cur += 4;
-	fwrite(cur,1,16,stdout);
+	fprintf(stderr,"Um %d\n",length);
 
 	assert(length <= info.st_size-(cur-mem));
 	fwrite(cur,1,length,stdout);

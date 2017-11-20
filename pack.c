@@ -24,33 +24,29 @@ int main(int argc, char *argv[])
 
 	// RGB_ALPHA = 4 bytes per pixel so /4 = /2 /2
 	// +4 for the sizeof the nsize
-	size_t pixels = (info.st_size+4) / 4;
+	size_t pixels = (info.st_size+4) / 3;
 	int width = sqrt(pixels);
 	int height = (pixels) / width + 1;
 
-	width = 4;
-	height = 4;
 	printf("WIDTH %d\n",width);
 	printf("HEIGHT %d\n",height);
 
-	PUTLIT("DEPTH 4\n"
+	PUTLIT("DEPTH 3\n"
 				 "MAXVAL 255\n"
-				 "TUPLTYPE RGB_ALPHA\n"
+				 "TUPLTYPE RGB\n"
 				 "ENDHDR\n");
 
 	size_t i;
 
-	for(i=0;i<4*4*4;++i) {
-		fputc(i,stdout);
-	}
-	return 0;
 	
 	int32_t nsize = htonl(info.st_size);
-	fwrite(&nsize,sizeof(nsize),1,stdout);
+	fprintf(stderr,"Um %d %d\n",info.st_size,nsize);
+	ssize_t amt = fwrite(&nsize,sizeof(nsize),1,stdout);
+	assert(amt == 1);
 	fwrite(mem,1,info.st_size,stdout);
 	munmap(mem,info.st_size);
 
-	for(i=0;i<4*width-info.st_size%(4*width);++i) {
+	for(i=0;i<3*width-info.st_size%(3*width);++i) {
 		fputc(255,stdout);
 	}
 		
