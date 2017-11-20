@@ -28,14 +28,18 @@ int main(int argc, char *argv[])
 	}
 	const char* cur = memchr(mem,'\n',info.st_size);
 	assert(cur);
+	
 	cur = memchr(cur+1,'\n',info.st_size-(cur-mem));
 	assert(cur);
+
 	cur = memchr(cur+1,'\n',info.st_size-(cur-mem));
 	assert(cur);
 	++cur;
 
 	int32_t length = ntohl(*((int32_t*)cur));
 	cur += 4;
+	fwrite(cur,1,16,stdout);
+
 	assert(length <= info.st_size-(cur-mem));
 	fwrite(cur,1,length,stdout);
 }
