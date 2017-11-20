@@ -1,3 +1,4 @@
+CYSTUFF?=https://github.com/cyisfor/cystuff.git
 CFLAGS+=-ggdb
 CFLAGS+=-Icystuff/src
 LINK=$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
@@ -10,4 +11,4 @@ unpack: unpack.c
 	$(LINK)
 
 cystuff/src/itoa.c:
-	git clone https://github.com/cyisfor/cystuff.git cystuff
+	git clone $(CYSTUFF) cystuff
